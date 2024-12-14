@@ -6,8 +6,8 @@
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "make:win": "electron-forge make --target=@electron-forge/maker-zip --platform=win",
-    "make:linux": "electron-forge make --target=@electron-forge/maker-zip --platform=win",
+    "make:win": "electron-forge make --target=@electron-forge/maker-zip --platform=win32",
+    "make:linux": "electron-forge make --target=@electron-forge/maker-zip --platform=linux",
     "make": "npm run make:win && npm run make:linux"
   },
   "keywords": [],
