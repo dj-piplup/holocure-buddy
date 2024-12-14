@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Holocure Buddy - Select Data</title>
+    <link rel="stylesheet" href="./styles.css"></link>
+  </head>
+  <body>
+    <div class='row'>
+        <label for='save-input'><abbr title='save_n.dat, this is in local appdata'>Save File</abbr>:</label>
+        <input type='text' id='save-input'/>
+        <button id='open-save-button'>Open</button>
+    </div>
+    <div class='row'>
+        <label for='data-input'><abbr title='data.win, this is in the game install folder'>Data File</abbr>:</label>
+        <input type='text' id='data-input'/>
+        <button id='open-data-button'>Open</button>
+    </div>
+    <footer>
+        <button id='confirm-button'>Confirm</button>
+        <button id='cancel-button'>Cancel</button>
+    </footer>
+    <script src='./index.js' type='module'></script>
+  </body>
+</html>

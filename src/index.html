@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <!-- https://developer.mozilla.org/en-US/docs/Web/HTTP/CSP -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <meta
+      http-equiv="X-Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'"
+    />
+    <title>Holocure Buddy</title>
+    <link rel="stylesheet" href="./styles.css"></link>
+  </head>
+  <body>
+    <h1>Holocure buddy</h1>
+    <div class='side-by-side'>
+      <section id='rolls-section'>
+        <h3>Random</h3>
+        <div class='buttons'>
+          <button id='random-stage'>Has unfinished stages</button>
+          <button id='random-gachi'>Non-Gachikoi</button>
+          <button id='random-any'>Any</button>
+        </div>
+        <p id='output-roll'></p>
+      </section>
+      <section id='log-section'>
+      </section>
+    </div>
+    <div class='side-by-side'>
+        <section id='clears-section'>
+            <h2>Clears</h2>
+            <div id='clears-zone' class='wrapped-column'></div>
+        </section>
+        <section id='letters-section'>
+            <h2>Letters</h2>
+            <div id='letters-zone' class='wrapped-column'></div>
+        </section>
+    </div>
+    <script src='./page-script.js' type='module'></script>
+  </body>
+</html>
