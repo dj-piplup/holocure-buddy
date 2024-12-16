@@ -1,6 +1,8 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c } from './lib.mjs';
 import { readFileSync } from 'fs';
+import updater from 'update-electron-app';
+updater.updateElectronApp();
 
 async function handleFileOpen () {
   const { canceled, filePaths } = await dialog.showOpenDialog()

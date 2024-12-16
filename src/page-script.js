@@ -65,7 +65,7 @@ window.electronAPI.onClears(({full,added}) => {
 });
 
 document.getElementById('random-stage').addEventListener('click', randos.stage);
-document.getElementById('random-gachi').addEventListener('click', randos.gachikoi);
+document.getElementById('random-gachikoi').addEventListener('click', randos.gachikoi);
 document.getElementById('random-any').addEventListener('click', randos.any);
 //#endregion Setup
 

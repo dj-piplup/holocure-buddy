@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "A companion app for Holocure that shows live global progress for your save",
   "main": "src/main.mjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dj-piplup/holocure-buddy.git"
+  },
   "scripts": {
     "start": "electron-forge start",
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -25,6 +29,7 @@
     "electron": "^33.2.1"
   },
   "dependencies": {
-    "electron-squirrel-startup": "^1.0.1"
+    "electron-squirrel-startup": "^1.0.1",
+    "update-electron-app": "^3.1.0"
   }
 }
