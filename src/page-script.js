@@ -32,7 +32,7 @@ window.electronAPI.onSaveUpdated(({saveData, staticData}) => {
     window.holocureOwned = saveData.characters.flatMap(([name,pulls]) => pulls > 0 ? [name] : []);
 
     if(window.holocureGachikoi.size === window.holocureStatic.allChars.length){
-        const gbtn = document.getElementById('random-gachi');
+        const gbtn = document.getElementById('random-gachikoi');
         gbtn.removeEventListener('click', randos.gachikoi);
         gbtn.parentElement.removeChild(gbtn);
     }
@@ -56,6 +56,9 @@ window.electronAPI.onClears(({full,added}) => {
     if(added){
         log(`${added.newChar} has completed ${added.stage}`);
         if(document.getElementById('auto-roll')?.checked){
+            if(!document.getElementById(`random-${lastRoll}`)){
+                lastRoll = 'any';
+            }
             randos[lastRoll]();
         }
     }
