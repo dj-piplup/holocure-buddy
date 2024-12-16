@@ -1,30 +1,20 @@
-const outputRoll = (t,cat) => (document.getElementById(`output-${cat}`).innerText = t)
-const log = (t) => {
-    const text = document.createElement('pre');
-    const d = new Date();
-    const time = d.toLocaleTimeString();
-    text.innerText = `> (${time}) ${t}`;
-    document.getElementById('log-section').appendChild(text);
-}
+let lastRoll = 'any';
 const randos = {
     stage: () => {
-        const r = randomChar({stages: true});
-        outputRoll(`You rolled: ${r}`,'roll');
+        lastRoll = 'stage';
+        randomChar({stages: true});
     },
     gachikoi: ()=> {
-        const r = randomChar({gachikoi: true});
-        outputRoll(`You rolled: ${r}`,'roll');
+        lastRoll = 'gachikoi';
+        randomChar({gachikoi: true});
     },
     any: ()=>{
-        const r = randomChar();
-        outputRoll(`You rolled: ${r}`,'roll');
+        lastRoll = 'any'
+        randomChar();
     }
 }
 
-document.getElementById('random-stage').addEventListener('click', randos.stage);
-document.getElementById('random-gachi').addEventListener('click', randos.gachikoi);
-document.getElementById('random-any').addEventListener('click', randos.any);
-
+//#region Setup
 window.electronAPI.onSaveUpdated(({saveData, staticData}) => {
     if(staticData){
         window.holocureStatic = staticData;
@@ -53,6 +43,7 @@ window.electronAPI.onSaveUpdated(({saveData, staticData}) => {
         sbtn.parentElement.removeChild(sbtn);
     }
 });
+
 window.electronAPI.onLetters(({full,added}) => {
     updateLetterOutput(full);
     if(added){
@@ -64,23 +55,27 @@ window.electronAPI.onClears(({full,added}) => {
     updateClearOutput(full);
     if(added){
         log(`${added.newChar} has completed ${added.stage}`);
+        if(document.getElementById('auto-roll')?.checked){
+            randos[lastRoll]();
+        }
     }
 });
 
+document.getElementById('random-stage').addEventListener('click', randos.stage);
+document.getElementById('random-gachi').addEventListener('click', randos.gachikoi);
+document.getElementById('random-any').addEventListener('click', randos.any);
+//#endregion Setup
+
+//#region Output
 function abbrStage(stageName){
     const {number,hard} = /^STAGE (?<number>\d+)( \((?<hard>H)ARD\))?$/.exec(stageName).groups;
     return `${number}${hard ?? ''}`;
 }
 
-let observing = new Map();
-
 function updateClearOutput(clearData){
     const stages = window.holocureStatic.allStages
     const destination = document.getElementById('clears-zone');
-    if(!observing.has('clears-zone')){
-        const obs = new ResizeObserver(sizeCallback).observe(destination);
-        observing.set('clears-zone', obs);
-    }
+    observeSize(destination);
     const rows = [];
     for(const [character,clears] of clearData){
         let output = `<div class='row'><strong class='name'>${formatText(character)}</strong>`;
@@ -93,10 +88,7 @@ function updateClearOutput(clearData){
 
 function updateLetterOutput(letters){
     const destination = document.getElementById('letters-zone');
-    if(!observing.has('letters-zone')){
-        const obs = new ResizeObserver(sizeCallback).observe(destination);
-        observing.set('letters-zone', obs);
-    }
+    observeSize(destination);
     const rows = [];
     letters.forEach(([letter,clear],index) => {
         rows.push(`<div class='${clear ? 'cleared row' : 'row'}'><div class='stage'>${index + 1}</div><div class='letter'>${letter}</div></div>`);
@@ -104,9 +96,10 @@ function updateLetterOutput(letters){
     destination.innerHTML = rows.join('');
 }
 
+let lastChar;
+let repeatCount = 0;
 function randomChar({gachikoi, stages} = {}){
     let pool = window.holocureOwned.slice();
-
     if(gachikoi){
         pool = pool.filter(name => !window.holocureGachikoi.has(name));
     }
@@ -120,14 +113,45 @@ function randomChar({gachikoi, stages} = {}){
     
     const random = new Uint16Array(1);
     crypto.getRandomValues(random);
-    return formatText(pool[random[0] % pool.length]);
+    const c = formatText(pool[random[0] % pool.length]);
+    if(c === lastChar){
+        repeatCount += 1;
+    } else {
+        repeatCount = 0;
+    }
+    lastChar = c;
+    let postScript;
+    if(repeatCount > 0){
+        if(repeatCount < 3){
+            postScript = 'again'.repeat(repeatCount);
+        } else {
+            postScript = 'many times';
+        }
+    }
+    postScript &&= ` (${postScript})`;
+    document.getElementById(`output-roll`).innerHTML = `You rolled: <strong>${c}</strong>` + (postScript ?? '');
+
 }
 
 function formatText(t){
     return t.toLowerCase().replaceAll(/\b[a-z]/g,c => c.toUpperCase());
 }
 
-const clamp = (v, min, max) => Math.max(min, Math.min(v, max));
+function log(t){
+    const text = document.createElement('pre');
+    const d = new Date();
+    const time = d.toLocaleTimeString();
+    text.innerText = `> (${time}) ${t}`;
+    document.getElementById('log-section').appendChild(text);
+}
+
+
+//#endregion Output
+
+//#region Column distribution
+function clamp(v, min, max){
+    return Math.max(min, Math.min(v, max));
+}
 
 function sizeCallback(entries){
     const recent = entries.at(-1);
@@ -148,4 +172,11 @@ function sizeCallback(entries){
     recent.target.style.setProperty('--column-width',`${colWidth}px`);
 }
 
-window.log = log;
+let observing = new Map();
+function observeSize(el){
+    if(!observing.has(el.id)){
+        const obs = new ResizeObserver(sizeCallback).observe(el);
+        observing.set(el.id, obs);
+    }
+}
+//#endregion

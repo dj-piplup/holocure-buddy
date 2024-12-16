@@ -36,10 +36,7 @@ h1{
 
 h2, h3{
     margin: 0;
-}
-
-h3 {
-    padding-block: 4px;
+    padding: 8px;
 }
 
 .row {
@@ -62,7 +59,7 @@ h3 {
 #log-section {
     flex-grow: 1;
     border: 1px solid var(--medium);
-    height: 8rem;
+    height: 8.5rem;
     overflow-y: auto;
     margin-inline-end: 1.5rem;
     padding-block: 0.25em;
@@ -120,20 +117,22 @@ h3 {
 }
 
 #rolls-section {
-    height: 8rem;
+    height: 8.5rem;
     margin-inline: 1.5rem;
-    margin-bottom: 1rem;
-    padding-inline: 0.5rem;
     width: 20rem;
     border: solid 1px var(--medium);
     .buttons {
         width: fit-content;
+        margin-bottom: 4px;
     }
     p {
         margin-block: 8px;
+        text-align: center;
+    }
+    label {
+        padding-inline-start: 4px;
     }
 }
-
 section {
     box-sizing: border-box;
     padding-inline: 1rem;
