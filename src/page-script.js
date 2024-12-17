@@ -67,7 +67,7 @@ window.electronAPI.onClears(({full,added}) => {
 let currentConfig;
 window.electronAPI.onConfig(config => {
     currentConfig = config;
-    const validKeys = ['textColor','backgroundColor','borderColor','clearedColor','fontFace'];
+    const validKeys = ['textColor','backgroundColor','borderColor','clearedColor','fontFamily'];
     for(const key of validKeys){
         if(config[key]?.length > 0){
             document.body.parentElement.style.setProperty(toCssVar(key), config[key]);
@@ -83,11 +83,22 @@ function sendConfigUpdate(partialUpdate){
     window.electronAPI.updateConfig(newConfig);
 }
 
-window.conf = sendConfigUpdate;
-
 document.getElementById('random-stage').addEventListener('click', randos.stage);
 document.getElementById('random-gachikoi').addEventListener('click', randos.gachikoi);
 document.getElementById('random-any').addEventListener('click', randos.any);
+document.getElementById('open-config-button').addEventListener('click', ()=>{
+    document.getElementById('config-modal').toggleAttribute('open');
+});
+document.getElementById('confirm-config').addEventListener('click', () => currentConfig = gatherConfig());
+document.getElementById('cancel-config').addEventListener('click', () => {
+    sendConfigUpdate(currentConfig);
+    document.getElementById('config-modal').toggleAttribute('open', false);
+});
+
+function gatherConfig(){
+    return currentConfig;
+}
+
 //#endregion Setup
 
 //#region Output

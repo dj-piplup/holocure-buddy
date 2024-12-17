@@ -170,8 +170,8 @@ export function getConfig({noCache} = {}){
     }
     if(existsSync(configFile)){
         const config = readFileSync(configFile).toString();
-        const { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFace } = JSON.parse(config);
-        cache.configContents = { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFace }
+        const { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFamily } = JSON.parse(config);
+        cache.configContents = { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFamily }
         return cache.configContents;
     }
 }
