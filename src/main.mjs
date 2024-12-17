@@ -1,5 +1,5 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
-import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c } from './lib.mjs';
+import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c, getConfig, setConfig } from './lib.mjs';
 import { readFileSync } from 'fs';
 import updater from 'update-electron-app';
 updater.updateElectronApp();
@@ -63,13 +63,25 @@ const createWindow = async () => {
   }
   const rawSave = readFileSync(save).toString();
   const saveData = parseSave(rawSave);
+
+  let config = getConfig();
   
-  win.loadFile('src/index.html')
+  win.loadFile('src/index.html');
   win.webContents.on('did-finish-load', ()=>{
     win.webContents.send('saveUpdated', {saveData, staticData:parseStatics(saveData)});
     win.webContents.send('clearsUpdated', {full:getClears(saveData)});
     win.webContents.send('lettersUpdated', {full:letterStatus(saveData)});
+    win.webContents.send('configUpdated', config);
   });
+
+  ipcMain.handle('saveConfig', (_event, newConfig) => {
+    config = newConfig;
+    win.webContents.send('configUpdated', newConfig);
+  })
+
+  win.on('closed', () => {
+    setConfig(config);
+  })
 
   watchSave(save, (updatedSave, clear) => {
     win.webContents.send('saveUpdated', updatedSave);

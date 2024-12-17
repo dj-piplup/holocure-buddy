@@ -1,6 +1,6 @@
 {
   "name": "holocure-buddy",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "A companion app for Holocure that shows live global progress for your save",
   "main": "src/main.mjs",
   "repository": {
@@ -12,7 +12,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "make:win": "electron-forge make --target=@electron-forge/maker-zip --platform=win32",
     "make:linux": "electron-forge make --target=@electron-forge/maker-zip --platform=linux",
-    "make": "npm run make:win && npm run make:linux"
+    "make": "npm install && npm run make:win && npm run make:linux"
   },
   "keywords": [],
   "author": "DJPiplup",

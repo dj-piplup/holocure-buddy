@@ -164,16 +164,19 @@ export async function findFiles(promptConfigs){
     throw new Error('No save files found or provided');
 }
 
-function getConfig(){
+export function getConfig({noCache} = {}){
+    if(cache.configContents && !noCache){
+        return cache.configContents;
+    }
     if(existsSync(configFile)){
         const config = readFileSync(configFile).toString();
-        if(config.replaceAll(/\s/g,'').match(/\{"(save|data)":".*","(save|data)":".*"\}/)){
-            return JSON.parse(config);
-        }
+        const { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFace } = JSON.parse(config);
+        cache.configContents = { save, data, textColor, backgroundColor, borderColor, clearedColor, fontFace }
+        return cache.configContents;
     }
 }
 
-function setConfig(configObj){
+export function setConfig(configObj){
     if(!existsSync(appDataFolder + 'Holocure-Buddy')){
         mkdirSync(appDataFolder + 'Holocure-Buddy');
     }

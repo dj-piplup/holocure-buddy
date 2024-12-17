@@ -64,6 +64,27 @@ window.electronAPI.onClears(({full,added}) => {
     }
 });
 
+let currentConfig;
+window.electronAPI.onConfig(config => {
+    currentConfig = config;
+    const validKeys = ['textColor','backgroundColor','borderColor','clearedColor','fontFace'];
+    for(const key of validKeys){
+        if(config[key]?.length > 0){
+            document.body.parentElement.style.setProperty(toCssVar(key), config[key]);
+        } else {
+            document.body.parentElement.style.removeProperty(toCssVar(key));
+        }
+    }
+});
+
+function sendConfigUpdate(partialUpdate){
+    const newConfig = {};
+    Object.assign(newConfig, currentConfig, partialUpdate);
+    window.electronAPI.updateConfig(newConfig);
+}
+
+window.conf = sendConfigUpdate;
+
 document.getElementById('random-stage').addEventListener('click', randos.stage);
 document.getElementById('random-gachikoi').addEventListener('click', randos.gachikoi);
 document.getElementById('random-any').addEventListener('click', randos.any);
@@ -148,7 +169,10 @@ function log(t){
     document.getElementById('log-section').appendChild(text);
 }
 
-
+function toCssVar(jsKey){
+    const dashed = jsKey.replace(/[A-Z]/, c => `-${c.toLowerCase()}`);
+    return `--custom-${dashed}`;
+}
 //#endregion Output
 
 //#region Column distribution

@@ -1,16 +1,16 @@
 :root {
     font-size: var(--custom-font-size, 16px);
-    font-family: var(--custom-font-face, Inter,system-ui,Avenir,Helvetica,Arial,sans-serif);
+    font-family: var(--custom-font-face, Inter), Inter,system-ui,Avenir,Helvetica,Arial,sans-serif;
     --text-color: var(--custom-text-color, #F0F0F0);
     --background-color: var(--custom-background-color, #2b2b33);
-    --medium: var(--custom-edge-color, #666);
+    --medium: var(--custom-border-color, #666);
     --row-size: 1.9rem;
     background-color: var(--background-color);
     color: var(--text-color);
 }
 
 .cleared {
-    background-color: green;
+    background-color: var(--custom-cleared-color, green);
 }
 
 .stage {
