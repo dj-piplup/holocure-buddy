@@ -3,7 +3,7 @@
     font-family: var(--custom-font-family, Inter), Inter,system-ui,Avenir,Helvetica,Arial,sans-serif;
     --text-color: var(--custom-text-color, #F0F0F0);
     --background-color: var(--custom-background-color, #2b2b33);
-    --medium: var(--custom-border-color, #666);
+    --border-color: var(--custom-border-color, #666);
     --row-size: 1.9rem;
     background-color: var(--background-color);
     color: var(--text-color);
@@ -42,7 +42,7 @@ h2, h3{
 button, input[type="text"] {
     background-color: color-mix(in srgb, var(--background-color), black 15%);
     border-radius: 4px;
-    border: 1px solid var(--medium);
+    border: 1px solid var(--border-color);
     color: var(--text-color);
 }
 
@@ -73,7 +73,7 @@ button {
 
 #log-section {
     flex-grow: 1;
-    border: 1px solid var(--medium);
+    border: 1px solid var(--border-color);
     height: 8.5rem;
     overflow-y: auto;
     margin-inline-end: 1.5rem;
@@ -135,7 +135,7 @@ button {
     height: 8.5rem;
     margin-inline: 1.5rem;
     width: 20rem;
-    border: solid 1px var(--medium);
+    border: solid 1px var(--border-color);
     .buttons {
         width: fit-content;
         margin-bottom: 4px;
@@ -166,46 +166,50 @@ section {
     width: 3rem;
 }
 
-dialog {
-    position: fixed;
+dialog[open] {
     top: 2rem;
-    right: 2rem;
+    z-index: 3;
+
     color: var(--text-color);
     background-color: var(--background-color);
+    border: solid 1px var(--border-color);
+    border-radius: 0.5rem;
+    padding: 0.75rem 2rem;
+
+    display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 1.25rem;
     align-items: stretch;
-    z-index: 3;
-    padding-inline: 2rem;
+    
     & > h2 {
         text-align: center;
+        padding: 0;
+        line-height: 0.9;
     }
-    & > div{
-        display: flex;
-        gap: 8px;
-        justify-content: center;
-        & > label & > button {
-            flex: none;
-        }
-        & > input {
-            flex: 1;
-        }
+
+    &::backdrop {
+        background-color: #0004;
     }
-    & button {
-        margin-top: 1rem;
+}
+
+#config-buttons {
+    display: flex;
+    gap: 8px;
+    align-self: center;
+}
+
+#config-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1rem 10ch;
+    row-gap: 4px;
+    p {
+        margin: 0;
+        margin-inline-end: -1rem;
+        z-index: 4;
+        text-align: end;
     }
-    &[open]{
-        display: flex;
-    }
-    & p {
-            position:relative;
-            margin: 0;
-            left: 0.35rem;
-            margin-right: -2ch;
-        }
-    & input[id*="color"] {
-        padding-left: 2.5ch;
-        
+    p:not(:empty) + input {
+        padding-inline-start: 1.1rem;
     }
 }
 

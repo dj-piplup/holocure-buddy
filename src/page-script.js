@@ -64,18 +64,29 @@ window.electronAPI.onClears(({full,added}) => {
     }
 });
 
+const styleInputs = [...document.getElementsByTagName('input')].filter(el => el.id.endsWith('-input'));
 let currentConfig;
+let tempConfig;
 window.electronAPI.onConfig(config => {
     currentConfig = config;
+    tempConfig = {...currentConfig};
+    styleInputs.forEach(el => {
+        const prop = el.id.replace('-input','').replaceAll(/-(\w)/g, (_,l) => l.toUpperCase());
+        el.value = (config[prop] ?? '').slice(prop.endsWith('Color') ? 1 : 0);
+    })
     const validKeys = ['textColor','backgroundColor','borderColor','clearedColor','fontFamily'];
     for(const key of validKeys){
-        if(config[key]?.length > 0){
-            document.body.parentElement.style.setProperty(toCssVar(key), config[key]);
-        } else {
-            document.body.parentElement.style.removeProperty(toCssVar(key));
-        }
+        applyColor(key, config[key])
     }
 });
+
+function applyColor(key,value){
+    if(value?.length > 0){
+        document.body.parentElement.style.setProperty(toCssVar(key), value);
+    } else {
+        document.body.parentElement.style.removeProperty(toCssVar(key));
+    }
+}
 
 function sendConfigUpdate(partialUpdate){
     const newConfig = {};
@@ -87,17 +98,28 @@ document.getElementById('random-stage').addEventListener('click', randos.stage);
 document.getElementById('random-gachikoi').addEventListener('click', randos.gachikoi);
 document.getElementById('random-any').addEventListener('click', randos.any);
 document.getElementById('open-config-button').addEventListener('click', ()=>{
-    document.getElementById('config-modal').toggleAttribute('open');
+    document.getElementById('config-modal').showModal();
 });
-document.getElementById('confirm-config').addEventListener('click', () => currentConfig = gatherConfig());
+document.getElementById('confirm-config').addEventListener('click', () => {
+    sendConfigUpdate(tempConfig);
+    document.getElementById('config-modal').close();
+});
 document.getElementById('cancel-config').addEventListener('click', () => {
     sendConfigUpdate(currentConfig);
-    document.getElementById('config-modal').toggleAttribute('open', false);
+    document.getElementById('config-modal').close();
 });
 
-function gatherConfig(){
-    return currentConfig;
-}
+styleInputs.forEach(el => {
+    const prop = el.id.replace('-input','').replaceAll(/-(\w)/g, (_,l) => l.toUpperCase());
+    el.addEventListener('input', () => {
+        tempConfig[prop] = el.value;
+        if(prop.endsWith('Color')){
+            tempConfig[prop] = el.value.match(/^\p{Hex}+$/u) && [3,4,6,8].includes(el.value.length) ? `#${el.value}` : undefined;
+        };
+        console.log(prop, toCssVar(prop));
+        applyColor(prop, tempConfig[prop]);
+    });
+})
 
 //#endregion Setup
 

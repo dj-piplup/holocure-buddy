@@ -2,7 +2,9 @@ import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c, getConfig, setConfig } from './lib.mjs';
 import { readFileSync } from 'fs';
 import updater from 'update-electron-app';
-updater.updateElectronApp();
+if(process.platform === 'win32'){
+  updater.updateElectronApp();
+}
 
 async function handleFileOpen () {
   const { canceled, filePaths } = await dialog.showOpenDialog()
