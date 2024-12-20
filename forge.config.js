@@ -4,12 +4,13 @@ const { FuseV1Options, FuseVersion } = require('@electron/fuses');
 module.exports = {
   packagerConfig: {
     asar: true,
+    ignore: [/site\/.*/,/firebase/]
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin','linux','win32'],
+      platforms: ['linux','win32'],
     },
   ],
   plugins: [

@@ -12,7 +12,14 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "make:win": "electron-forge make --target=@electron-forge/maker-zip --platform=win32",
     "make:linux": "electron-forge make --target=@electron-forge/maker-zip --platform=linux",
-    "make": "npm install && npm run make:win && npm run make:linux"
+    "make": "npm install && electron-forge make --target=@electron-forge/maker-zip --all",
+    "publish:asar": "node ./build-scripts/fetch-asar.mjs",
+    "publish:site": "pnpm fb deploy",
+    "version-check": "node ./build-scripts/check-version.mjs",
+    "fb": "firebase --account djpiplup.dev@gmail.com",
+    "launch": "pnpm version-check && pnpm launch:base",
+    "relaunch": "pnpm launch:base",
+    "launch:base": "pnpm make && pnpm publish:asar && pnpm publish:site"
   },
   "keywords": [],
   "author": "DJPiplup",
@@ -25,6 +32,7 @@
     "@electron-forge/maker-zip": "^7.6.0",
     "@electron-forge/plugin-auto-unpack-natives": "^7.6.0",
     "@electron-forge/plugin-fuses": "^7.6.0",
+    "@electron/asar": "^3.2.17",
     "@electron/fuses": "^1.8.0",
     "electron": "^33.2.1"
   },
