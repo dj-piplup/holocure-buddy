@@ -1,10 +1,7 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c, getConfig, setConfig } from './lib.mjs';
 import { readFileSync } from 'fs';
-import updater from 'update-electron-app';
-if(process.platform === 'win32'){
-  updater.updateElectronApp();
-}
+import { checkForUpdates, downloadLatest, currentVersion as newVersion } from './updater.mjs';
 
 async function handleFileOpen () {
   const { canceled, filePaths } = await dialog.showOpenDialog()
@@ -47,6 +44,40 @@ const filePrompt = async ({save,data},parent) => {
   return result;
 }
 
+const promptVersion = async (parent) => {
+  const promptWin = new BrowserWindow({
+    width: 420,
+    height: 180,
+    parent,
+    modal:true,
+    webPreferences: {
+      preload: import.meta.dirname + '/updater/preload.js'
+    },
+    icon: import.meta.dirname + '/public/holocure.ico'
+  });
+  promptWin.loadFile('src/updater/index.html');
+  let resolveTo;
+  let choice = false;
+  const result = new Promise(resolve => {
+    resolveTo = resolve;
+  })
+  ipcMain.handle('choose', (_, decision)=>{
+    if(!decision){
+      promptWin.close();
+    } else {
+      promptWin.webContents.send('start-download');
+      downloadLatest(app.getAppPath()).then(()=>{
+        choice = true;
+        promptWin.close();
+      });
+    }
+  });
+  promptWin.on('close', () => {
+    resolveTo(choice);
+  });
+  return result;
+}
+
 const createWindow = async () => {
   const win = new BrowserWindow({
     width: 800,
@@ -56,6 +87,14 @@ const createWindow = async () => {
     },
     icon: import.meta.dirname + '/public/holocure.ico'
   });
+  let config = getConfig();
+  if(checkForUpdates(config.version)){
+    const downloaded = await promptVersion(win);
+    if(downloaded){
+      app.relaunch();
+      app.exit();
+    }
+  }
 
   let dead = false;
   const { save } = await findFiles((dat)=>filePrompt(dat,win)).catch(()=>(dead = true));
@@ -66,7 +105,6 @@ const createWindow = async () => {
   const rawSave = readFileSync(save).toString();
   const saveData = parseSave(rawSave);
 
-  let config = getConfig();
   
   win.loadFile('src/index.html');
   win.webContents.on('did-finish-load', ()=>{
