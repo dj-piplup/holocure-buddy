@@ -195,7 +195,10 @@ dialog[open] {
 #config-buttons {
     display: flex;
     gap: 8px;
-    align-self: center;
+    align-self: flex-end;
+    .threatening {
+        background-color: color-mix(in srgb, var(--background-color), red 15%);
+    }
 }
 
 #config-inputs {

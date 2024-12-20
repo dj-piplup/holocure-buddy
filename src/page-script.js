@@ -64,7 +64,7 @@ window.electronAPI.onClears(({full,added}) => {
     }
 });
 
-const styleInputs = [...document.getElementsByTagName('input')].filter(el => el.id.endsWith('-input'));
+const styleInputs = [...document.querySelectorAll('[id$="-input"')];
 let currentConfig;
 let tempConfig;
 window.electronAPI.onConfig(config => {
@@ -108,15 +108,39 @@ document.getElementById('cancel-config').addEventListener('click', () => {
     sendConfigUpdate(currentConfig);
     document.getElementById('config-modal').close();
 });
+document.getElementById('clear-config').addEventListener('click', () => {
+    styleInputs.forEach(el => {
+        el.value = '';
+    });
+    for(const key in tempConfig){
+        tempConfig[key] = undefined;
+        applyColor(key, undefined);
+    }
+});
 
 styleInputs.forEach(el => {
     const prop = el.id.replace('-input','').replaceAll(/-(\w)/g, (_,l) => l.toUpperCase());
+    console.log(el.tagName);
+    if(el.tagName.match(/SELECT/i)){
+        const blank = document.createElement('option');
+        blank.innerText = '';
+        el.appendChild(blank);
+
+        window.queryLocalFonts().then(list => {
+            const fonts = new Set();
+            list.forEach(f => fonts.add(f.family));
+            fonts.forEach(family => {
+                const option = document.createElement('option');
+                option.value = option.innerText = family;
+                el.appendChild(option);
+            })
+        });
+    }
     el.addEventListener('input', () => {
         tempConfig[prop] = el.value;
         if(prop.endsWith('Color')){
             tempConfig[prop] = el.value.match(/^\p{Hex}+$/u) && [3,4,6,8].includes(el.value.length) ? `#${el.value}` : undefined;
         };
-        console.log(prop, toCssVar(prop));
         applyColor(prop, tempConfig[prop]);
     });
 })
