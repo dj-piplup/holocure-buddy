@@ -120,7 +120,6 @@ document.getElementById('clear-config').addEventListener('click', () => {
 
 styleInputs.forEach(el => {
     const prop = el.id.replace('-input','').replaceAll(/-(\w)/g, (_,l) => l.toUpperCase());
-    console.log(el.tagName);
     if(el.tagName.match(/SELECT/i)){
         const blank = document.createElement('option');
         blank.innerText = '';
