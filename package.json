@@ -1,6 +1,6 @@
 {
   "name": "holocure-buddy",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "A companion app for Holocure that shows live global progress for your save",
   "main": "src/main.mjs",
   "repository": {
