@@ -6,4 +6,4 @@ if(existsSync(`./site/${pkgjson.version}/app.asar`)){
     process.exit(1);
 }
 
-writeFileSync('./src/version.txt',pkgjson.version);
+writeFileSync('./src/version.mjs',`export const version = "${pkgjson.version}";`);

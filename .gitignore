@@ -4,4 +4,4 @@ out/
 site/**/*.asar
 site/version.txt
 .firebase
-src/version.txt
+src/version.mjs

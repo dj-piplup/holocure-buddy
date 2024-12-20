@@ -1,7 +1,8 @@
 import { app, BrowserWindow, ipcMain, dialog } from 'electron';
 import { parseSave, findFiles, getClears, letterStatus, watchSave, parseStatics, c, getConfig, setConfig } from './lib.mjs';
 import { readFileSync } from 'fs';
-import { checkForUpdates, downloadLatest, currentVersion as newVersion } from './updater.mjs';
+import { checkForUpdates, downloadLatest } from './updater.mjs';
+import { version as loadedVersion } from './version.mjs';
 
 async function handleFileOpen () {
   const { canceled, filePaths } = await dialog.showOpenDialog()
@@ -87,8 +88,7 @@ const createWindow = async () => {
     },
     icon: import.meta.dirname + '/public/holocure.ico'
   });
-  let config = getConfig();
-  if(checkForUpdates(config.version)){
+  if(checkForUpdates(loadedVersion)){
     const downloaded = await promptVersion(win);
     if(downloaded){
       app.relaunch();
@@ -106,6 +106,7 @@ const createWindow = async () => {
   const saveData = parseSave(rawSave);
 
   
+  let config = getConfig();
   win.loadFile('src/index.html');
   win.webContents.on('did-finish-load', ()=>{
     win.webContents.send('saveUpdated', {saveData, staticData:parseStatics(saveData)});
