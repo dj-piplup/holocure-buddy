@@ -201,6 +201,14 @@ dialog[open] {
     }
 }
 
+button {
+    font-family: inherit !important;
+}
+
+option {
+    font-family: var(--sample-font);
+}
+
 #config-inputs {
     display: grid;
     grid-template-columns: 1fr 1rem 10ch;

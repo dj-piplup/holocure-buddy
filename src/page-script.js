@@ -130,8 +130,12 @@ styleInputs.forEach(el => {
             const fonts = new Set();
             list.forEach(f => fonts.add(f.family));
             fonts.forEach(family => {
+                if(fonts.has(family.match(/\w+ \w+(?=\s)/)?.[0])){
+                    return;
+                }
                 const option = document.createElement('option');
                 option.value = option.innerText = family;
+                option.style.setProperty('--sample-font', family);
                 el.appendChild(option);
             })
         });
