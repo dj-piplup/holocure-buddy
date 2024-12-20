@@ -1,4 +1,4 @@
-import { writeFileSync } from "original-fs";
+import { readFileSync, writeFileSync } from "original-fs";
 
 export const currentVersion = await fetch('https://holocure-buddy-updates.web.app/version.txt').then(r => r.text());
 export function checkForUpdates(v){
@@ -17,6 +17,9 @@ function parseVersion(vString){
 }
 
 export async function downloadLatest(dir){
+    const pakDir = dir.replace('/app.asar','.pak');
+    const pak = await fetch(`https://holocure-buddy-updates.web.app/${currentVersion}/resources.pak`).then(r => r.bytes())
+    writeFileSync(pakDir,pak);
     const data = await fetch(`https://holocure-buddy-updates.web.app/${currentVersion}/app.asar`).then(r => r.bytes());
     writeFileSync(dir,data);
 }

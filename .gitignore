@@ -2,6 +2,7 @@ node_modules
 dist
 out/
 site/**/*.asar
+site/**/*.pak
 site/version.txt
 .firebase
 src/version.mjs
