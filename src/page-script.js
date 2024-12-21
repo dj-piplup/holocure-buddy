@@ -64,6 +64,10 @@ window.electronAPI.onClears(({full,added}) => {
     }
 });
 
+window.electronAPI.onVersionLoaded((version) => {
+    document.head.getElementsByTagName('title').item(0).innerText = `HoloCure Buddy v${version}`;
+})
+
 const styleInputs = [...document.querySelectorAll('[id$="-input"')];
 let currentConfig;
 let tempConfig;

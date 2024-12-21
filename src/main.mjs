@@ -109,6 +109,7 @@ const createWindow = async () => {
   let config = getConfig();
   win.loadFile('src/index.html');
   win.webContents.on('did-finish-load', ()=>{
+    win.webContents.send('versionLoaded', loadedVersion);
     win.webContents.send('saveUpdated', {saveData, staticData:parseStatics(saveData)});
     win.webContents.send('clearsUpdated', {full:getClears(saveData)});
     win.webContents.send('lettersUpdated', {full:letterStatus(saveData)});
